@@ -6,6 +6,10 @@ int cols,rows;
 int scl = 20;
 //int[][] grid = new int[cols][rows];
 Cell[][] grid;
+Cell[][] cell;
+Cell[][] currentPos;
+
+
 
 
 void setup() {
@@ -15,12 +19,11 @@ void setup() {
   cols = w / scl;
   rows = h / scl;
   // Save state of cell
-  grid = new Cell[cols][rows];
+  cell = new Cell[cols][rows];
   for (int i = 0; i < cols; i++) {
     for (int j = 0; j < rows; j++) {
       // Initialize each Cell object
-      //grid[i][j] = new Cell(i*20,j*20,20,20,false);
-      grid[i][j] = new Cell(i*rows,j*cols,scl,scl,false);
+      cell[i][j] = new Cell(i*rows,j*cols,scl,scl,false);
       
     }
   }
@@ -36,28 +39,42 @@ void draw() {
 
   for (int x = 0; x < cols; x++) {
     for (int y = 0; y < rows; y++) {
+       //cell[x][y].display();
       int posX = x*scl;
       int posY = y*scl;
+      //Cell currentPos = new Cell(x*rows,y*cols,scl,scl,false);
       stroke(55);
       if ((mouseX >= posX && mouseX <= posX+scl) &&
         (mouseY >= posY && mouseY <= posY+scl)) {
         fill(75);
         if (mousePressed == true) {
-          println("Clicked at: " + posX + ", " + posY);
-          //if (!grid[posX/scl][posY/scl]) {
-          //  grid[posX/scl][posY/scl] = true;
-          //}
-          fill(100);
+          println("Clicked at: " + posX + ", " + posY); //<>//
+          //When you click on a cell, toggle it
+          if (!cell[posX/scl][posY/scl].alive) {
+            cell[posX/scl][posY/scl].alive = true;
+            fill(204,102,0);
+            //println(cell[posX/scl][posY/scl].alive);
+            println("yo");
+          } else {
+            cell[posX/scl][posY/scl].alive = false;
+            //println(cell[posX/scl][posY/scl].alive);
+            println("yo");
+          }
+         fill(100);
         }
-         println("Mouse at: " + posX + " and " + posY);
+         println("Mouse at: " + posX + ", " + posY);
         }else{
           fill(50);
         }
-        //if (grid[posX][posY]) {
-        //}
-      // Oscillate and display each object
-      //grid[i][j].oscillate();
-      grid[x][y].display();
+        if (cell[posX/scl][posY/scl].alive) {
+          fill(204,102,0);
+          //println("yo");
+          rect(posX, posY, scl, scl);
+        }
+        
+      // Display each object
+      cell[x][y].display();
+
     }
   }
 }
@@ -80,11 +97,32 @@ class Cell {
     void display() {
     stroke(20);
     rect(x,y,w,h);
-
   }
+    //boolean checkPos() {
+    //  if (grid[i]) {
+    //    grid[x/scl][y/scl] = true;
+    //  }
+    //}
+
 }
 
-
+//void mouseClicked(MouseEvent evt) {
+//  if (evt.getCount() == 2)doubleClicked();
+//}
+//void doubleClicked() {
+//  println("yp");
+int last;
+//void draw(){
+//  if(millis()-last>1000) background(255);
+//}
+void mouseClicked(MouseEvent evt) {
+  if (evt.getCount() == 2) doubleClicked();
+  //else background(0,0,255);
+  last = millis();
+}
+void doubleClicked(){
+  //background(255,0,0);
+}
 //void mouseClicked() {
 //  if (value == 0) {
 //    value = 255;
