@@ -134,24 +134,47 @@ class Cell {
 //  }
 //}
 //}
-
+}
 void findSurrounding(int  col, int row) {
-
-     //find all serouding cell by adding +/- 1 to col and row 
+    // find all surrounding cells by adding +/- 1 to col and row 
     for (int colNum = col - 1 ; colNum <= (col + 1) ; colNum +=1  ) {
-
         for (int rowNum = row - 1 ; rowNum <= (row + 1) ; rowNum +=1  ) {
-
-             //if not the center cell 
+          
+             // if not the center cell (skip center)
             if(! ((colNum == col) && (rowNum == row))) {
-
-                //make sure it is within  grid
+              
+                // stay within bounds of the grid
                 if(withinGrid (colNum, rowNum)) {
-                    System.out.println("Neighbor of "+ col+ " "+ row + " - " + colNum +" " + rowNum );
+                    //System.out.println("Neighbor of "+ col+ " "+ row + " - " + colNum +" " + rowNum );
+                
+                
+                  // if surrounding cell is alive, increase neighbor value 
+                  if(grid[colNum][rowNum].alive){
+                   println(grid[colNum][rowNum].alive);
+                   grid[colNum][rowNum].neighbor +=1;
+                   
+                  }
+                  
+                  // If the cell is alive and has 2 or 3 neighbors, 
+                  // then it remains alive. Else it dies.
+                  if (grid[colNum][rowNum].alive && 
+                    grid[colNum][rowNum].neighbor > 2) {
+                      grid[colNum][rowNum].alive = true;
+                  } else {
+                    grid[colNum][rowNum].alive = false;
+                  }
+                  
+                  // If the cell is dead and has exactly 3 neighbors, 
+                  // then it comes to life. Else if remains dead.
+                  if (!grid[colNum][rowNum].alive &&
+                    grid[colNum][rowNum].neighbor == 3) {
+                      grid[colNum][rowNum].alive = true;
+                  }
                 }
             }
         }
     }
+            println("~~~~~~~~~~~~~~~~~");
 }
 
 //define if cell represented by colNum, rowNum is inside grid
@@ -165,93 +188,3 @@ boolean withinGrid(int colNum, int rowNum) {
     }
     return true;
 }
-
-//  void checkNeighbors(int x, int y) {
-//   int count = -1; // not counting ourselfs.
-//    for (int xx = x - 1; xx <= x + 1; xx++) {
-//      for (int yy = y - 1; yy <= y + 1; yy++) {
-//        if (grid[xx][yy]) {
-//            count++;
-//        }
-//    }
-//}
-//return count;
-  //// find all surrounding cell by adding +/- 1 to col and row 
-  //for (int row = - 1; row <= (row + 1); x+=1) {
-  //  //println("test " + i, cols, posX, posX/scl)-->21 20 0 0;
-  //  for (int col = - 1; col <= (col + 1); col +=1) {
-  //    //println("test " + i, cols, posX, posX/scl);
-      
-  //    //if not the center cell
-  //    //println("test " + y, cols);
-  //    if (!((x == col) && (y == row))) {
-  //      // keeping within bounds...
-  //      if (inBounds(x,y)) {
-  //        println("Neighbor of " + cols + " " + rows + " - " + x + " " + y + 
-  //        " - Alive? - " + grid[posX/scl][posY/scl].alive + 
-  //        " - pos: " + grid[posX/scl][posY/scl].x + ", " + grid[posX/scl][posY/scl].y
-  //        + ", " + grid[cols-1][rows-1].x);
-
-  //        //if() {
-  //        //}
-  //      }
-  //    }
-  //  }
-  //}
-}
-
-
-
-
-
-// find all surrounding neighbors
-//void checkNeighbor(int row, int col) {
-//  // find all surrounding cell by adding +/- 1 to col and row 
-//  for (int i = col - 1; i <= (col + 1); i+=1) {
-//    for (int j = row - 1; j <= (row + 1); j +=1) {
-      //int posI = i*scl;
-      //int posJ = j*scl;
-
-//      if (mousePressed == true) {
-//        //delay(125);
-//        //println("Clicked at pos: " + posI + ", " + posJ);
-//         println("Clicked at row/col: " + row + ", " + col);
-//        //println("Clicked at pos/scl: " + posI/scl + ", " + posJ/scl);
-//      }
-//      //if not the center cell
-//      if (!((i == col) && (j == row))) {
-//        // keeping within bounds...
-//        if (inBounds(i,j)) {
-//          println("Neighbor of " + col + " " + row + " - " + i + " " + j + " - Alive? - " + grid[col][row].alive +"\n~~~~~~~~~~~~~~~~~~~~" );
-//          //if() {
-//          //}
-//        }
-//      }
-//    }
-//  }
-//}
-// if we are inside the bounds of matrix (...take the red pill)
-boolean inBounds(int colIndex, int rowIndex) {
-  if ((colIndex < 0) || (rowIndex < 0)) {
-     return false;
-  }
-  if ((colIndex >= cols) && (rowIndex >= rows)) {
-    return false;
-  }
-  return true;
-}
-    // // find all surrounding cell by adding +/- 1 to col and row 
-    //for (int i = (posX/scl) - 1; i <= ((posX/scl) + 1); i++) {
-    //  for (int j = (posY/scl) - 1; j <= ((posY/scl) + 1); j++) {
-    //    //if not the center cell
-    //    if (!((i == posX/scl) && (j == posY/scl))) {
-    //      // keeping within bounds...
-    //      if (inBounds(posX/scl,posY/scl)) {
-    //        println("Neighbor of " + posX/scl + " " + posY/scl + " - " + i + " " + j + " - Alive? - " + grid[posX/scl][posY/scl].alive );
-    //        //if() {
-    //        //}
-    //      }
-    //    }
-    //  }
-    //}
-    //      println("~~~~~~~~~~~~~~~~~");
