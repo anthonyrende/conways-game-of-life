@@ -2,6 +2,7 @@ int posX = 0;
 int posY = 0;
 int cols = 25;
 int rows = 25;
+int scl = 25;
 //int[][] grid = new int[cols][rows];
 Cell[][] grid;
 
@@ -12,7 +13,7 @@ void setup() {
   for (int i = 0; i < cols; i++) {
     for (int j = 0; j < rows; j++) {
       // Initialize each object
-      grid[i][j] = new Cell(i*20,j*20,20,20,i+j);
+      grid[i][j] = new Cell(i*20,j*20,20,20,false);
     }
   }
 }
@@ -26,11 +27,24 @@ void draw() {
   
   //int x = 0;
   //renderGrid();
-  for (int i = 0; i < cols; i++) {
-    for (int j = 0; j < rows; j++) {
+  for (int x = 0; x < cols; x++) {
+    for (int y = 0; y < rows; y++) {
+      int posX = x*scl;
+      int posY = y*scl;
+      if ((mouseX >= posX && mouseX <= posX+scl) &&
+        (mouseY >= posY && mouseY >= posY+scl)) {
+        fill(75);
+        if (mousePressed == true) {
+          println("Clicked at: " + posX + ", " + posY);
+          fill(100);
+        }
+         println("Mouse at: " + posX + " and " + posY);
+        }else{
+          fill(50);
+        }
       // Oscillate and display each object
       //grid[i][j].oscillate();
-      grid[i][j].display();
+      grid[x][y].display();
     }
   }
 }
@@ -41,32 +55,44 @@ class Cell {
   // as well as its size with the variables x,y,w,h
   float x,y;   // x,y location
   float w,h;   // width and height
-  float angle; // angle for oscillating brightness
+  boolean alive; // alive for checking alive / dead boolean
   
-   Cell(float tempX, float tempY, float tempW, float tempH, float tempAngle) {
+   Cell(float tempX, float tempY, float tempW, float tempH, boolean tempAlive) {
     x = tempX;
     y = tempY;
     w = tempW;
     h = tempH;
-    angle = tempAngle;
+    alive = tempAlive;
    }    
     void display() {
     stroke(255);
-    // Color calculated using sine wave
-    fill(127);
+    //fill(value);
     rect(x,y,w,h);
-
+    //if (mousePressed ==  true) {
+    //  //fill(22);
+    //  println("Clicked at: " + 
+    //} else {
+    //  fill(88);
+    //}
+    //rect(mouseX,mouseY,w,h);
   }
+  //void mouseClicked() {
+  //  if (value == 0) {
+  //    value = 255;
+  //  } else {
+  //    value = 0;
+  //  }
+  //}
 }
 
 
-void mouseClicked() {
-  if (value == 0) {
-    value = 255;
-  } else {
-    value = 0;
-  }
-}
+//void mouseClicked() {
+//  if (value == 0) {
+//    value = 255;
+//  } else {
+//    value = 0;
+//  }
+//}
 
 
 
