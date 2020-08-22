@@ -41,31 +41,40 @@ void draw() {
 
   for (int x = 0; x < cols; x++) {
     for (int y = 0; y < rows; y++) {
-       //cell[x][y].display();
       int posX = x*scl;
       int posY = y*scl;
       //Cell currentPos = new Cell(x*rows,y*cols,scl,scl,false);
       stroke(55);
+      
       if ((mouseX >= posX && mouseX <= posX+scl) &&
         (mouseY >= posY && mouseY <= posY+scl)) {
         fill(75);
+        
         if (mousePressed == true) {
+          findSurrounding(x,y);
           delay(125);
-          println("Clicked at: " + posX + ", " + posY); //<>//
-          checkNeighbor(x,y);
+           //checkNeighbors(posX/scl,posY/scl);
+          println("Clicked at pos: " + posX + ", " + posY); //<>//
+          //println("Clicked at pos/scl: " + posX/scl + ", " + posY/scl);
           
           //When you click on a cell, toggle it
           if (!grid[posX/scl][posY/scl].alive) {
             grid[posX/scl][posY/scl].alive = true;
+            //grid[posX/scl][posY/scl].checkNeighbor(x,y);
             fill(204,102,0);
-            //println(cell[posX/scl][posY/scl].alive);
+                       //checkNeighbor(posX/scl,posY/scl);
+            //println(grid[posX/scl][posY/scl].alive);
             //println(grid[posX/scl][posY/scl], grid[posX][posY]);
           } else {
             grid[posX/scl][posY/scl].alive = false;
-            //println(cell[posX/scl][posY/scl].alive);
-            println("yo");
+             //checkNeighbor(posX/scl,posY/scl);
+            //println(grid[posX/scl][posY/scl].alive);
+            //println("yo");
           }
+ 
+         //checkNeighbor(x,y);
          fill(100);
+         //println("hi");
         }
          //println("Mouse at: " + posX + ", " + posY);
         }else{
@@ -73,18 +82,19 @@ void draw() {
         }
         if (grid[posX/scl][posY/scl].alive) {
           fill(204,102,0);
-          //println("yo");
+          //println("yo" + posX/scl,posY/scl);
           rect(posX, posY, scl, scl);
         }
-        
       // Display each object
-      grid[x][y].display();
+      grid[posX/scl][posY/scl].display();
       //checkNeighbors(grid[][]);
+      //println(grid[x][y].y + " - " + grid[posX/scl][posY/scl].);
 
     }
-  }
-}
 
+  }
+     
+}
 // A Cell object
 class Cell {
   // A cell object knows about its location in the grid 
@@ -106,30 +116,120 @@ class Cell {
     stroke(20);
     rect(x,y,w,h);
   }
-  //   for (int x = 0; x < grid[x].x ; x++) {
-  //    for (int y = 0; y < grid[y].y; y++) {
-  //        // Count the nearby population
-  //        cell cellsAlive = grid[posX/scl][posY/scl].isAlive(x - 1, y - 1) + this.isAlive(x, y - 1) + this.isAlive(x + 1, y - 1) + this.isAlive(x - 1, y) + this.isAlive(x + 1, y) + this.isAlive(x - 1, y + 1) + this.isAlive(x, y + 1) + this.isAlive(x + 1, y + 1);
-  //    }
-  //}
-    
+//    void checkNeighbor() {
+//  // find all surrounding cell by adding +/- 1 to col and row 
+//  for (int i = cols - 1; i <= (cols + 1); i+=1) {
+//    for (int j = rows - 1; j <= (rows + 1); j +=1) {
+//      //if not the center cell
+//      if (!((i == cols) && (j == rows))) {
+//        // keeping within bounds...
+//        if (inBounds(i,j)) {
+//          println("Neighbor of " + cols + " " + rows + " - " + i + " " + j + " - Alive? - " + grid[posX/scl][posY/scl].alive );
+
+//          //if() {
+//          //}
+//        }
+//      }
+//    }
+//  }
+//}
+//}
+
+void findSurrounding(int  col, int row) {
+
+     //find all serouding cell by adding +/- 1 to col and row 
+    for (int colNum = col - 1 ; colNum <= (col + 1) ; colNum +=1  ) {
+
+        for (int rowNum = row - 1 ; rowNum <= (row + 1) ; rowNum +=1  ) {
+
+             //if not the center cell 
+            if(! ((colNum == col) && (rowNum == row))) {
+
+                //make sure it is within  grid
+                if(withinGrid (colNum, rowNum)) {
+                    System.out.println("Neighbor of "+ col+ " "+ row + " - " + colNum +" " + rowNum );
+                }
+            }
+        }
+    }
 }
 
-// find all surrounding neighbors
-void checkNeighbor(int row, int col) {
-  // find all surrounding cell by adding +/- 1 to col and row 
-  for (int i = col - 1; i <= (col + 1); i +=1) {
-    for (int j = row - 1; j <= (row + 1); j += 1) {
-      //if not the center cell
-      if (!((i == col) && (j == row))) {
-        // keeping within bounds...
-        if (inBounds(i,j)) {
-          println("Neighbor of " + col + " " + row + " - " + i + " " + j );
-        }
-      }
+//define if cell represented by colNum, rowNum is inside grid
+boolean withinGrid(int colNum, int rowNum) {
+
+    if((colNum < 0) || (rowNum <0) ) {
+        return false;    //false if row or col are negative
     }
-  }
+    if((colNum >= cols) || (rowNum >= rows)) {
+        return false;    //false if row or col are > 75
+    }
+    return true;
 }
+
+//  void checkNeighbors(int x, int y) {
+//   int count = -1; // not counting ourselfs.
+//    for (int xx = x - 1; xx <= x + 1; xx++) {
+//      for (int yy = y - 1; yy <= y + 1; yy++) {
+//        if (grid[xx][yy]) {
+//            count++;
+//        }
+//    }
+//}
+//return count;
+  //// find all surrounding cell by adding +/- 1 to col and row 
+  //for (int row = - 1; row <= (row + 1); x+=1) {
+  //  //println("test " + i, cols, posX, posX/scl)-->21 20 0 0;
+  //  for (int col = - 1; col <= (col + 1); col +=1) {
+  //    //println("test " + i, cols, posX, posX/scl);
+      
+  //    //if not the center cell
+  //    //println("test " + y, cols);
+  //    if (!((x == col) && (y == row))) {
+  //      // keeping within bounds...
+  //      if (inBounds(x,y)) {
+  //        println("Neighbor of " + cols + " " + rows + " - " + x + " " + y + 
+  //        " - Alive? - " + grid[posX/scl][posY/scl].alive + 
+  //        " - pos: " + grid[posX/scl][posY/scl].x + ", " + grid[posX/scl][posY/scl].y
+  //        + ", " + grid[cols-1][rows-1].x);
+
+  //        //if() {
+  //        //}
+  //      }
+  //    }
+  //  }
+  //}
+}
+
+
+
+
+
+// find all surrounding neighbors
+//void checkNeighbor(int row, int col) {
+//  // find all surrounding cell by adding +/- 1 to col and row 
+//  for (int i = col - 1; i <= (col + 1); i+=1) {
+//    for (int j = row - 1; j <= (row + 1); j +=1) {
+      //int posI = i*scl;
+      //int posJ = j*scl;
+
+//      if (mousePressed == true) {
+//        //delay(125);
+//        //println("Clicked at pos: " + posI + ", " + posJ);
+//         println("Clicked at row/col: " + row + ", " + col);
+//        //println("Clicked at pos/scl: " + posI/scl + ", " + posJ/scl);
+//      }
+//      //if not the center cell
+//      if (!((i == col) && (j == row))) {
+//        // keeping within bounds...
+//        if (inBounds(i,j)) {
+//          println("Neighbor of " + col + " " + row + " - " + i + " " + j + " - Alive? - " + grid[col][row].alive +"\n~~~~~~~~~~~~~~~~~~~~" );
+//          //if() {
+//          //}
+//        }
+//      }
+//    }
+//  }
+//}
 // if we are inside the bounds of matrix (...take the red pill)
 boolean inBounds(int colIndex, int rowIndex) {
   if ((colIndex < 0) || (rowIndex < 0)) {
@@ -140,3 +240,18 @@ boolean inBounds(int colIndex, int rowIndex) {
   }
   return true;
 }
+    // // find all surrounding cell by adding +/- 1 to col and row 
+    //for (int i = (posX/scl) - 1; i <= ((posX/scl) + 1); i++) {
+    //  for (int j = (posY/scl) - 1; j <= ((posY/scl) + 1); j++) {
+    //    //if not the center cell
+    //    if (!((i == posX/scl) && (j == posY/scl))) {
+    //      // keeping within bounds...
+    //      if (inBounds(posX/scl,posY/scl)) {
+    //        println("Neighbor of " + posX/scl + " " + posY/scl + " - " + i + " " + j + " - Alive? - " + grid[posX/scl][posY/scl].alive );
+    //        //if() {
+    //        //}
+    //      }
+    //    }
+    //  }
+    //}
+    //      println("~~~~~~~~~~~~~~~~~");
