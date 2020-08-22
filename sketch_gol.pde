@@ -1,15 +1,23 @@
+//import g4p_controls.*;
+ 
+//public class MyImageButton extends GImageButton {
+//    public MyImageButton(PApplet theApplet, float p0, float p1, float p2, float p3, String[] fnames) {
+//        super(theApplet, p0, p1, p2, p3, fnames, null);
+//    }
+ 
+//}
+
 int posX = 0;
 int posY = 0;
 //int cols = 25;
 //int rows = 25;
 int cols,rows;
 int scl = 20;
-//int[][] grid = new int[cols][rows];
-Cell[][] grid;
+//int[][] cell = new int[cols][rows];
 Cell[][] cell;
 Cell[][] cellsAlive;
 Cell[][] currentPos;
-
+boolean running = true;
 ////Hold down the button
 //boolean button = false;
 
@@ -22,17 +30,20 @@ void setup() {
   cols = w / scl;
   rows = h / scl;
   // Save state of cell
-  grid = new Cell[cols][rows];
+  cell = new Cell[cols][rows];
   for (int i = 0; i < cols; i++) {
     for (int j = 0; j < rows; j++) {
       // Initialize each Cell object
-      grid[i][j] = new Cell(i*rows,j*cols,scl,scl,false,0);
+      cell[i][j] = new Cell(i*rows,j*cols,scl,scl,false,0);
       
     }
   }
 }
 int value = 0;
 void draw() {
+  //if (!running) {
+  //  noLoop();
+  //}
   background(0);
   strokeWeight(2);
   //stroke(255);
@@ -57,7 +68,9 @@ void draw() {
         
         if (mousePressed == true) {
           // find surrounding neighbors, and add life/death logic
-          findSurrounding(x,y);
+          if (running){
+            findSurrounding(x,y);
+          }
           // to prevent fast clicks
           delay(125);
 
@@ -65,17 +78,21 @@ void draw() {
           //println("Clicked at pos/scl: " + posX/scl + ", " + posY/scl);
           
           //When you click on a cell, toggle it
-          if (!grid[posX/scl][posY/scl].alive) {
-            grid[posX/scl][posY/scl].alive = true;
-            //grid[posX/scl][posY/scl].checkNeighbor(x,y);
+          if (!cell[posX/scl][posY/scl].alive) {
+            cell[posX/scl][posY/scl].alive = true;
+            // Fill this color
             fill(204,102,0);
-                       //checkNeighbor(posX/scl,posY/scl);
-            //println(grid[posX/scl][posY/scl].alive);
-            //println(grid[posX/scl][posY/scl], grid[posX][posY]);
-          } else {
-            grid[posX/scl][posY/scl].alive = false;
+            
+            //if (running) {
+            //  cell[posX/scl][posY/scl].alive = false;
+            //}
              //checkNeighbor(posX/scl,posY/scl);
-            //println(grid[posX/scl][posY/scl].alive);
+            //println(cell[posX/scl][posY/scl].alive);
+            //println(cell[posX/scl][posY/scl], cell[posX][posY]);
+          } else {
+            cell[posX/scl][posY/scl].alive = false;
+             //checkNeighbor(posX/scl,posY/scl);
+            //println(cell[posX/scl][posY/scl].alive);
             //println("yo");
           }
 
@@ -87,23 +104,23 @@ void draw() {
           fill(50);
         }
         // if cell is toggled alive
-        if (grid[posX/scl][posY/scl].alive) {
+        if (cell[posX/scl][posY/scl].alive) {
           // fill it
           fill(204,102,0);
           //println("yo" + posX/scl,posY/scl);
           rect(posX, posY, scl, scl);
         }
       // Display each object
-      grid[posX/scl][posY/scl].display();
-
-      //println(grid[x][y].y + " - " + grid[posX/scl][posY/scl].);
+      cell[posX/scl][posY/scl].display();
+  
+      //println(cell[x][y].y + " - " + cell[posX/scl][posY/scl].);
     }
   } 
 }
 
 // A Cell object
 class Cell {
-  // A cell object knows about its location in the grid 
+  // A cell object knows about its location in the cell 
   // as well as its size with the variables x,y,w,h,
   // its alive/dead state && neighbors
   float x,y;   // x,y location
@@ -131,7 +148,7 @@ class Cell {
 //      if (!((i == cols) && (j == rows))) {
 //        // keeping within bounds...
 //        if (inBounds(i,j)) {
-//          println("Neighbor of " + cols + " " + rows + " - " + i + " " + j + " - Alive? - " + grid[posX/scl][posY/scl].alive );
+//          println("Neighbor of " + cols + " " + rows + " - " + i + " " + j + " - Alive? - " + cell[posX/scl][posY/scl].alive );
 
 //          //if() {
 //          //}
@@ -150,32 +167,34 @@ void findSurrounding(int  col, int row) {
              // if not the center cell (skip the center)
             if(! ((colNum == col) && (rowNum == row))) {
               
-                // stay within bounds of the grid
-                if(withinGrid (colNum, rowNum)) {
+                // stay within bounds of the cell
+                if(withinBounds (colNum, rowNum)) {
                     //System.out.println("Neighbor of "+ col+ " "+ row + " - " + colNum +" " + rowNum );
                 
                 
                   // if surrounding cell is alive, increase neighbor value 
-                  if(grid[colNum][rowNum].alive){
-                   println(grid[colNum][rowNum].alive);
-                   grid[colNum][rowNum].neighbor +=1;
+                  if(cell[colNum][rowNum].alive){
+                   println(cell[colNum][rowNum].alive);
+                   cell[colNum][rowNum].neighbor +=1;
                    
                   }
                   
                   // If the cell is alive and has 2 or 3 neighbors, 
                   // then it remains alive. Else it dies.
-                  if (grid[colNum][rowNum].alive && 
-                    grid[colNum][rowNum].neighbor > 2) {
-                      grid[colNum][rowNum].alive = true;
+                  if (cell[colNum][rowNum].alive && 
+                    cell[colNum][rowNum].neighbor > 2) {
+                      cell[colNum][rowNum].alive = true;
                   } else {
-                    grid[colNum][rowNum].alive = false;
+                    cell[colNum][rowNum].alive = false;
                   }
                   
                   // If the cell is dead and has exactly 3 neighbors, 
                   // then it comes to life. Else if remains dead.
-                  if (!grid[colNum][rowNum].alive &&
-                    grid[colNum][rowNum].neighbor == 3) {
-                      grid[colNum][rowNum].alive = true;
+                  if (!cell[colNum][rowNum].alive && 
+                    cell[colNum][rowNum].neighbor == 3) {
+                      cell[colNum][rowNum].alive = true;
+                  } else {
+                    continue;
                   }
                 }
             }
@@ -185,7 +204,7 @@ void findSurrounding(int  col, int row) {
 }
 
 //define if cell is within bounds of the matrix (... take the red pill)
-boolean withinGrid(int colNum, int rowNum) {
+boolean withinBounds(int colNum, int rowNum) {
     if((colNum < 0) || (rowNum <0) ) {
         return false;    //false if row or col are negative
     }
@@ -193,6 +212,22 @@ boolean withinGrid(int colNum, int rowNum) {
         return false;    //false if row or col are > 75
     }
     return true;
+}
+
+void reset() {
+  int w = 400;
+  int h = 400;
+  cols = w / scl;
+  rows = h / scl;
+  // Save state of cell
+  cell = new Cell[cols][rows];
+  for (int i = 0; i < cols; i++) {
+    for (int j = 0; j < rows; j++) {
+      // Initialize each Cell object
+      cell[i][j] = new Cell(i*rows,j*cols,scl,scl,false,0);
+      
+    }
+  }
 }
 
 // game buttons
@@ -231,7 +266,8 @@ void drawButtons() {
     fill(rectColor);
   }
   stroke(255);
-  rect(rectX, rectY, rectSize, rectSize);
+  rect(rectX, rectY, rectSize, rectSize, 30);
+  //text("Stop", 50, 400);
   
   if (circleOver) {
     fill(circleHighlight);
@@ -243,33 +279,46 @@ void drawButtons() {
 }
 
 void update(int x, int y) {
+  //if (start) {
+  //    start = false;
+  //    noLoop();
+  //  } else {
+  //    start = true;
+  //    loop();
+  //  }
   if ( overCircle(circleX, circleY, circleSize) ) {
     circleOver = true;
     rectOver = false;
+    start = false;
   } else if ( overRect(rectX, rectY, rectSize, rectSize) ) {
     rectOver = true;
     circleOver = false;
+    start = true;
   } else {
-    circleOver = rectOver = false;
+    start = circleOver = rectOver = false;
   }
 }
 
 void mousePressed() {
   if (circleOver) {
     currentColor = circleColor;
+    running = true;
   }
   if (rectOver) {
     currentColor = rectColor;
+    running = false;
+    reset();
   }
-  if (mouseX > rectX-rectSize/2 && mouseX < rectX-rectSize/2 + rectSize &&
-    mouseY > rectY-rectSize && mouseY < rectY-rectSize + rectSize/2) {
-    if (start) {
-      start = false;
-      println("yo");
-    } else {
-      start = true;
-    }
-  }
+  //if (mouseX > rectX-rectSize/2 && mouseX < rectX-rectSize/2 + rectSize &&
+  //  mouseY > rectY-rectSize && mouseY < rectY-rectSize + rectSize/2) {
+  //  //if (start) {
+  //  //  start = false;
+  //  //  noLoop();
+  //  //} else {
+  //  //  start = true;
+  //  //  loop();
+  //  //}
+  //}
 }
 
 
@@ -291,108 +340,3 @@ boolean overCircle(int x, int y, int diameter) {
     return false;
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//int rectX, rectY;      // Position of square button
-//int rect2X, rect2Y;  // Position of circle button
-//int rectSize = 90;     // Diameter of rect
-//int rect2Size = 90;   // Diameter of circle
-//color rectColor, rect2Color, baseColor;
-//color rectHighlight, rect2Highlight;
-//color currentColor;
-//boolean rectOver = false;
-//boolean rect2Over = false;
-
-
-
-//void gameButtonsSetup() {
-//  rectColor = color(0);
-//  rectHighlight = color(51);
-//  rect2Color = color(255);
-//  rect2Highlight = color(204);
-//  baseColor = color(102);
-//  currentColor = baseColor;
-//  rect2X = width/2-rectSize-10;
-//  rect2Y = width/2-rectSize/2;
-//  rectX =100;
-//  rectY =410;
-//  ellipseMode(CENTER);
-//}
-
-//void drawButtons() {
-//  background(currentColor);
-  
-//  if (rectOver) {
-//    fill(rectHighlight);
-//  } else {
-//    fill(rectColor);
-//  }
-//  stroke(255);
-//  rect(rectX, rectY, rectSize, rectSize);
-  
-//  if (rect2Over) {
-//    fill(rect2Highlight);
-//  } else {
-//    fill(rect2Color);
-//  }
-//  stroke(20);
-//  //ellipse(circleX, circleY, circleSize, circleSize);
-
-//}
-
-//void update(int x, int y) {
-//  if ( rect2Circle(rect2X, rect2Y, rect2Size, rect2Size) ) {
-//    rect2Over = true;
-//    rectOver = false;
-//  } else if ( overRect(rectX, rectY, rectSize, rectSize) ) {
-//    rectOver = true;
-//    rect2Over = false;
-//  } else {
-//    rect2Over = rectOver = false;
-//  }
-//}
-
-//void mousePressed() {
-//  if (rect2Over) {
-//    currentColor = rect2Color;
-//  }
-//  if (rectOver) {
-//    currentColor = rectColor;
-//  }
-//}
-
-//boolean overRect(int x, int y, int width, int height)  {
-//  if (mouseX >= x && mouseX <= x+width && 
-//      mouseY >= y && mouseY <= y+height) {
-//    return true;
-//  } else {
-//    return false;
-//  }
-//}
-
-//boolean rect2Circle(int x, int y, int width, int height) {
-//  if (mouseX >= x && mouseX <= x+width && 
-//      mouseY >= y && mouseY <= y+height) {
-//    return true;
-//  } else {
-//    return false;
-//  }
-
-//}
