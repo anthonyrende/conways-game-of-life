@@ -1,19 +1,27 @@
 int posX = 0;
 int posY = 0;
-int cols = 25;
-int rows = 25;
-int scl = 25;
+//int cols = 25;
+//int rows = 25;
+int cols,rows;
+int scl = 20;
 //int[][] grid = new int[cols][rows];
 Cell[][] grid;
 
 
 void setup() {
-  size(500, 500);
+  size(400, 400);
+  int w = 400;
+  int h = 400;
+  cols = w / scl;
+  rows = h / scl;
+  // Save state of cell
   grid = new Cell[cols][rows];
   for (int i = 0; i < cols; i++) {
     for (int j = 0; j < rows; j++) {
-      // Initialize each object
-      grid[i][j] = new Cell(i*20,j*20,20,20,false);
+      // Initialize each Cell object
+      //grid[i][j] = new Cell(i*20,j*20,20,20,false);
+      grid[i][j] = new Cell(i*rows,j*cols,scl,scl,false);
+      
     }
   }
 }
@@ -22,26 +30,31 @@ void draw() {
   
   background(0);
   strokeWeight(2);
-  stroke(255);
-  fill(value);
-  
-  //int x = 0;
-  //renderGrid();
+  //stroke(255);
+  //fill(value);
+
+
   for (int x = 0; x < cols; x++) {
     for (int y = 0; y < rows; y++) {
       int posX = x*scl;
       int posY = y*scl;
+      stroke(55);
       if ((mouseX >= posX && mouseX <= posX+scl) &&
-        (mouseY >= posY && mouseY >= posY+scl)) {
+        (mouseY >= posY && mouseY <= posY+scl)) {
         fill(75);
         if (mousePressed == true) {
           println("Clicked at: " + posX + ", " + posY);
+          //if (!grid[posX/scl][posY/scl]) {
+          //  grid[posX/scl][posY/scl] = true;
+          //}
           fill(100);
         }
          println("Mouse at: " + posX + " and " + posY);
         }else{
           fill(50);
         }
+        //if (grid[posX][posY]) {
+        //}
       // Oscillate and display each object
       //grid[i][j].oscillate();
       grid[x][y].display();
@@ -65,24 +78,10 @@ class Cell {
     alive = tempAlive;
    }    
     void display() {
-    stroke(255);
-    //fill(value);
+    stroke(20);
     rect(x,y,w,h);
-    //if (mousePressed ==  true) {
-    //  //fill(22);
-    //  println("Clicked at: " + 
-    //} else {
-    //  fill(88);
-    //}
-    //rect(mouseX,mouseY,w,h);
+
   }
-  //void mouseClicked() {
-  //  if (value == 0) {
-  //    value = 255;
-  //  } else {
-  //    value = 0;
-  //  }
-  //}
 }
 
 
