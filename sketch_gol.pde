@@ -7,23 +7,31 @@
  
 //}
 
+// Variables for timer
+int interval = 100;
+int lastRecordedTime = 0;
+
+// Position X / Y
 int posX = 0;
 int posY = 0;
-//int cols = 25;
-//int rows = 25;
+
 int cols,rows;
 int scl = 20;
-//int[][] cell = new int[cols][rows];
+
+// New Cell matrix && buffer
 Cell[][] cell;
 Cell[][] cellsAlive;
-Cell[][] currentPos;
-boolean running = true;
+Cell[][] cellsBuffer;
+
+boolean running = false;
 ////Hold down the button
 //boolean button = false;
 
 
 void setup() {
   size(400, 500);
+  textAlign(LEFT, TOP);
+  smooth();
   gameButtonsSetup();
   int w = 400;
   int h = 400;
@@ -31,6 +39,7 @@ void setup() {
   rows = h / scl;
   // Save state of cell
   cell = new Cell[cols][rows];
+  cellsBuffer = new Cell[cols][rows];
   for (int i = 0; i < cols; i++) {
     for (int j = 0; j < rows; j++) {
       // Initialize each Cell object
@@ -46,18 +55,22 @@ void draw() {
   //}
   background(0);
   strokeWeight(2);
-  //stroke(255);
-  //fill(value);
+  //textFont("Arial");
+  text("Generation" + lastRecordedTime, 50,200);
   update(mouseX, mouseY);
   drawButtons();
-
+              if (running && !mousePressed){
+           for (x = 0; x < cols; x++) {
+            for (y = 0; y < rows; y++) {
+              cellsBuffer[x][y] = cell[x][y];
+            }
 
   for (int x = 0; x < cols; x++) {
     for (int y = 0; y < rows; y++) {
       int posX = x*scl;
       int posY = y*scl;
       //Cell currentPos = new Cell(x*rows,y*cols,scl,scl,false);
-      
+          
       stroke(55);
       
       // if mouse is within boundaries
@@ -65,59 +78,78 @@ void draw() {
         (mouseY >= posY && mouseY <= posY+scl)) {
         
           fill(75);
-        
+          
         if (mousePressed == true) {
           // find surrounding neighbors, and add life/death logic
-          if (running){
-            findSurrounding(x,y);
-          }
-          // to prevent fast clicks
+          
+          // to prevent fast cell toggles
           delay(125);
 
           println("Clicked at pos: " + posX + ", " + posY); //<>//
-          //println("Clicked at pos/scl: " + posX/scl + ", " + posY/scl);
+          //println("Clicked at pos/scl: " + x + ", " + y);
           
           //When you click on a cell, toggle it
-          if (!cell[posX/scl][posY/scl].alive) {
-            cell[posX/scl][posY/scl].alive = true;
+          if (!cell[x][y].alive) {
+            cell[x][y].alive = true;
             // Fill this color
             fill(204,102,0);
             
-            //if (running) {
-            //  cell[posX/scl][posY/scl].alive = false;
-            //}
-             //checkNeighbor(posX/scl,posY/scl);
-            //println(cell[posX/scl][posY/scl].alive);
-            //println(cell[posX/scl][posY/scl], cell[posX][posY]);
+            //  save alive cells
+            //cellsAlive[x][y] = cell[x][y];
+            
+             //checkNeighbor(x,y);
+            //println(cell[x][y], cell[posX][posY]);
           } else {
-            cell[posX/scl][posY/scl].alive = false;
-             //checkNeighbor(posX/scl,posY/scl);
-            //println(cell[posX/scl][posY/scl].alive);
+            cell[x][y].alive = false;
+             //checkNeighbor(x,y);
+            //println(cell[x][y].alive);
             //println("yo");
           }
 
          fill(100);
          //println("yerr");
+         //if (!running){
+         //findSurrounding(x,y);
+         ////whileLoop(x,y);
+         //}
         }
          //println("Mouse at: " + posX + ", " + posY);
         } else {
           fill(50);
+
         }
         // if cell is toggled alive
-        if (cell[posX/scl][posY/scl].alive) {
+        if (cell[x][y].alive) {
           // fill it
           fill(204,102,0);
-          //println("yo" + posX/scl,posY/scl);
           rect(posX, posY, scl, scl);
         }
       // Display each object
-      cell[posX/scl][posY/scl].display();
+      cell[x][y].display();
+              //findSurrounding(x,y);
   
-      //println(cell[x][y].y + " - " + cell[posX/scl][posY/scl].);
+      //println(cell[x][y].y + " - " + cell[x][y].);
     }
-  } 
+  }
+   // Iterate if timer ticks
+  if (millis()-lastRecordedTime>interval) {
+    if (!running) {
+      generation();
+      lastRecordedTime = millis();
+    }
+  }
 }
-
+void generation(){// When the clock ticks
+  // Save cells to buffer (so we operate with one array keeping the other intact)
+  for (int x = 0; x < cols; x++) {
+    for (int y = 0; y < rows; y++) {
+      cellsBuffer[x][y] = cell[x][y];
+    }
+  }
+}
+void whileLoop(int x, int y){
+  
+}
 // A Cell object
 class Cell {
   // A cell object knows about its location in the cell 
@@ -148,7 +180,7 @@ class Cell {
 //      if (!((i == cols) && (j == rows))) {
 //        // keeping within bounds...
 //        if (inBounds(i,j)) {
-//          println("Neighbor of " + cols + " " + rows + " - " + i + " " + j + " - Alive? - " + cell[posX/scl][posY/scl].alive );
+//          println("Neighbor of " + cols + " " + rows + " - " + i + " " + j + " - Alive? - " + cell[x][y].alive );
 
 //          //if() {
 //          //}
@@ -160,9 +192,12 @@ class Cell {
 //}
 }
 void findSurrounding(int  col, int row) {
+  for (int x=0; x<width/5; x++) {
+    for (int y=0; y<height/5; y++) {
     // find all surrounding cells by adding +/- 1 to col and row 
     for (int colNum = col - 1 ; colNum <= (col + 1) ; colNum +=1  ) {
         for (int rowNum = row - 1 ; rowNum <= (row + 1) ; rowNum +=1  ) {
+          
           
              // if not the center cell (skip the center)
             if(! ((colNum == col) && (rowNum == row))) {
@@ -181,28 +216,26 @@ void findSurrounding(int  col, int row) {
                   
                   // If the cell is alive and has 2 or 3 neighbors, 
                   // then it remains alive. Else it dies.
-                  if (cell[colNum][rowNum].alive && 
-                    cell[colNum][rowNum].neighbor > 2) {
-                      cell[colNum][rowNum].alive = true;
-                  } else {
-                    cell[colNum][rowNum].alive = false;
-                  }
-                  
-                  // If the cell is dead and has exactly 3 neighbors, 
-                  // then it comes to life. Else if remains dead.
-                  if (!cell[colNum][rowNum].alive && 
-                    cell[colNum][rowNum].neighbor == 3) {
-                      cell[colNum][rowNum].alive = true;
-                  } else {
-                    continue;
-                  }
+                  if (cell[colNum][rowNum].alive) { 
+                   if (cell[colNum][rowNum].neighbor < 2 || 
+                      cell[colNum][rowNum].neighbor > 3) {
+                        cell[colNum][rowNum].alive = false;
+                      } 
+                    }
+                    else {
+                       // If the cell is dead and has exactly 3 neighbors, 
+                      // then it comes to life. Else if remains dead.
+                      if (cell[colNum][rowNum].neighbor == 3) {
+                        cell[colNum][rowNum].alive = true;
+                        }
+                      }
                 }
             }
         }
-    }
-            println("~~~~~~~~~~~~~~~~~");
+    }}}
+           println("~~~~~~~~~~~~~~~~~");
 }
-
+ 
 //define if cell is within bounds of the matrix (... take the red pill)
 boolean withinBounds(int colNum, int rowNum) {
     if((colNum < 0) || (rowNum <0) ) {
@@ -289,24 +322,35 @@ void update(int x, int y) {
   if ( overCircle(circleX, circleY, circleSize) ) {
     circleOver = true;
     rectOver = false;
-    start = false;
   } else if ( overRect(rectX, rectY, rectSize, rectSize) ) {
     rectOver = true;
     circleOver = false;
-    start = true;
+
   } else {
-    start = circleOver = rectOver = false;
+    circleOver = rectOver = false;
   }
 }
 
 void mousePressed() {
   if (circleOver) {
     currentColor = circleColor;
-    running = true;
+     if (!running){ 
+      for (int x = 0; x < cols; x++) {
+        for (int y = 0; y < rows; y++) {
+          findSurrounding(x, y);
+        }
+    }
+      }
+    //if (!running) {
+    //  running = true;
+    //          findSurrounding(posX,posY);
+    //}
+    //running = true;
   }
   if (rectOver) {
     currentColor = rectColor;
     running = false;
+    //cell[x][y] =
     reset();
   }
   //if (mouseX > rectX-rectSize/2 && mouseX < rectX-rectSize/2 + rectSize &&
