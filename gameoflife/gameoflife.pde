@@ -75,3 +75,31 @@ void draw(){
     }
   }
 }
+
+void lifeCycle() {
+  // Save cells to buffer (so we opeate with one array keeping the other intact)
+  for (int x=0; x<width/cellSize; x++) {
+    for (int y=0; y<height/cellSize; y++) {
+      cellsBuffer[x][y] = cells[x][y];
+    }
+  }
+  // Visit each cell in matrix:
+  for (int x=0; x<width/cellSize; x++) {
+    for (int y=0; y<height/cellSize; y++) {
+      // And visit all the neighbours of each cell
+      int neighbours = 0;
+      for (int xx = x-1; xx <= x+1; xx++) {
+        for (int yy = y-1; yy <= y+1; yy++) {  
+          // Keeping within bounds
+          if (((xx >= 0)&&(xx < width/cellSize))&&((yy >= 0)&&(yy <height/cellSize))) { 
+            // Skip current self cell
+            if (!((xx==x)&&(yy==y))) {
+              // Find alive neighbors, increment
+              if (cellsBuffer[xx][yy]==1) {
+                neighbours++; 
+              }
+            } // End of if
+          } // End of if
+        } // End of yy loop
+      } //End of xx loop
+}
