@@ -1,7 +1,11 @@
 // Size of cell
-int cellSize = 5;
+int cellSize = 15;
 
 int randomCellSpawn = 15;
+
+// Variables for timer
+int interval = 100;
+int lastRecordedTime = 0;
 
 // Array of Cells
 int[][] cells;
@@ -14,7 +18,7 @@ color alive = color(0, 200, 0);
 color dead = color(0);
 
 void setup() {
-  size(640, 360);
+  size(840, 460);
   stroke(20);
   strokeWeight(2);
   
@@ -25,7 +29,14 @@ void setup() {
   //Initialize cell
   for (int x = 0; x < width/cellSize; x++) {
     for (int y =0; y < height/cellSize; y++) {
-      cells[x][y] = 0; // Save state of each cell
+      // Random cell spawn at start        
+      float state = random(100);
+      if (state > randomCellSpawn) {
+        state = 0;
+      } else {
+        state = 1;
+      }
+      cells[x][y] = int(state); // Save state of each cell
     }
   }
   background(0);
@@ -74,6 +85,13 @@ void draw(){
       }
     }
   }
+  // Iterate if timer ticks
+  if (millis()-lastRecordedTime>interval) {
+    if (running) {
+      lifeCycle();
+      lastRecordedTime = millis();
+    }
+  }
 }
 
 void lifeCycle() {
@@ -116,4 +134,33 @@ void lifeCycle() {
       }
     } 
   } 
+}
+
+void keyPressed() {
+  if (key=='r' || key == 'R') {
+    // Restart: reinitialization of cells
+    for (int x=0; x<width/cellSize; x++) {
+      for (int y=0; y<height/cellSize; y++) {
+        float state = random (100);
+        if (state > randomCellSpawn) {
+          state = 0;
+        }
+        else {
+          state = 1;
+        }
+        cells[x][y] = int(state); // Save state of each cell
+      }
+    }
+  }
+  if (key==' ') { // On/off of pause
+    running = !running;
+  }
+  if (key == 'c') { // clear all
+    for (int x = 0; x < width/cellSize; x++) {
+      for (int y = 0; y < height/cellSize; y++) {
+        cells[x][y] = 0;
+      
+      }
+    }
+  }
 }
