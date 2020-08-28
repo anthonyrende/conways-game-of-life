@@ -102,4 +102,18 @@ void lifeCycle() {
           } // End of if
         } // End of yy loop
       } //End of xx loop
+      
+      // Game of Life rules!
+      if (cellsBuffer[x][y]==1) { // If cell is alive
+        if (neighbours < 2 || neighbours > 3) {  // and has 2 or 3 neighbours
+          cells[x][y] = 0; // Die unless it has 2 or 3 neighbours
+        }
+      } 
+      else { // The cell is dead
+        if (neighbours == 3 ) {
+          cells[x][y] = 1; // Make alive only if it has 3 neighbours
+        }
+      }
+    } 
+  } 
 }
