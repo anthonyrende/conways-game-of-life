@@ -1,22 +1,25 @@
+// Size of cell
+int cellSize = 5;
+
+int randomCellSpawn = 15;
 
 // Array of Cells
-Cell[][] cells;
+int[][] cells;
 
-// A Cell object
-class Cell {
-   // A cell object knows about its size
-  // as well as the probability of Alive or Dead at starting,
-  // its alive/dead state && neighbors
-  int cellSize;
-  int randomAliveOrDead;
-  color alive;
-  color dead;
-  int neighbors;
-  Cell(int tempCellSize, int tempRandomAliveOrDead, color tempAlive, color tempDead, int tempNeighbors) {
-    cellSize =  tempCellSize;
-    randomAliveOrDead = tempRandomAliveOrDead;
-    alive = tempAlive;
-    dead = tempDead;
-    neighbors = tempNeighbors;
+
+void setup() {
+  size(640, 360);
+  stroke(20);
+  strokeWeight(2);
+  //Instantiate cell arrays
+  cells = new int[width/cellSize][height/cellSize];
+  
+  //Initialize cell
+  for (int x = 0; x < width/cellSize; x++) {
+    for (int y =0; y < height/cellSize; y++) {
+      cells[x][y] = 0; // Save state of each cell
+    }
   }
+  background(0);
+
 }
