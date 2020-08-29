@@ -1,5 +1,9 @@
+// importing controlP5 library
+import controlP5.*;
+ControlP5 cp5;
+
 // Size of cell
-int cellSize = 15;
+int cellSize = 10;
 
 int randomCellSpawn = 15;
 
@@ -17,8 +21,12 @@ boolean running = true;
 color alive = color(0, 200, 0);
 color dead = color(0);
 
+  
 void setup() {
-  size(840, 460);
+  size(840, 560);
+  fill(100);
+  rect(130, 130, 1900, 1600);
+  //fill(200);
   stroke(20);
   strokeWeight(2);
   
@@ -40,6 +48,16 @@ void setup() {
     }
   }
   background(0);
+
+  
+  // Game Board
+  //fill(200);
+  //rect(0, 0, 1900, 1600);
+  cp5 = new ControlP5(this);
+    cp5 = new ControlP5(this);
+    cp5.addSlider("mySlider");
+    text("speed",0,0);
+    cp5.addButton("myButton");
 
 }
 
