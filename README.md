@@ -4,6 +4,7 @@ Welcome to John Conway's "Game of Life"! This is a computer science
 classic from 1970, a program that simulates a _cellular automaton_
 (plural _automata_). It has connections to all kinds of different
 aspects of computer science and nature.
+
 ![cellular-automata](https://media.giphy.com/media/d7SnByEMkrdeoVQ2lT/giphy.gif)
 
 A very famous cellular automaton is John Conway's Game of Life. app. 
